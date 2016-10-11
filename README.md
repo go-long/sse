@@ -17,8 +17,7 @@ import "github.com/itcomusic/sse"
 ## Create sse
 
 #### SSE with default options
-
-    Field ```Retry``` is seconds waitting reconnect client to server after
+Field ```Retry``` is seconds waitting reconnect client to server after
 connection had lost.
 
 ```go
@@ -40,9 +39,8 @@ handleSSE := sse.New(&sse.Config{
 })
 ```
 
-#### Handler
-
-    First argument function HandlerHTTP must be cid client's. CID must be unique.
+#### Handler  
+First argument function HandlerHTTP must be cid client's. CID must be unique.
 CID is key for save clients(consumers). CID can be generate with uuid packages or
 smt else. Identical CID is prohibited, if CID are found, new client do not
 connect to server.
@@ -59,17 +57,15 @@ http.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
 ```
 
 ## API Example
-
-    Every event with ```Data``` has optional attribute ```DisabledFormatting```. If
+Every event with ```Data``` has optional attribute ```DisabledFormatting```. If
 it is enabled, ```Data``` will be formatted.
-    You can disabled formatting. It is necessary to deny creating additional
+You can disabled formatting. It is necessary to deny creating additional
 fields ```data```. If you want send json data and it contains ```\n```, desirable
 set ```DisabledFormatting = true```.
 
 
 #### Send Event
-
-    Send event all clients
+Send event all clients
 
 ```go
 import "github.com/itcomusic/sse"
@@ -84,8 +80,7 @@ serveSSE.SendEvent(&Event{
 ```
 
 #### Send EventOnly
-
-    Send event only to selected clients. CID are slice IDs
+Send event only to selected clients. CID are slice IDs
 
 ```go
 import "github.com/itcomusic/sse"
@@ -101,8 +96,7 @@ serveSSE.SendEvent(&EventOnly{
 ```
 
 #### Send EventExcept
-
-    Send event except to selected clients. CID are slice IDs
+Send event except to selected clients. CID are slice IDs
 
 ```go
 import "github.com/itcomusic/sse"
@@ -118,8 +112,7 @@ serveSSE.SendEvent(&EventExcept{
 ```
 
 #### Send EventRetry
-
-    Send event which it has time in seconds waitting reconnect client to server after
+Send event which it has time in seconds waitting reconnect client to server after
 connection had lost. Also new clients will be get this time.
 
 ```go
@@ -133,8 +126,7 @@ serveSSE.SendEvent(&EventRetry{
 ```
 
 #### Count connections
-
-    Gives information about count connected clients, including inactive -
+Gives information about count connected clients, including inactive -
 client has not been removed yet from map.
 
 ```go
@@ -146,6 +138,7 @@ serveSSE.CountConsumer()
 ```
 
 ## Notify
+Notifications inform about connected, disconnected, reconnected clients
 
 #### ConnectNotify
 
@@ -172,8 +165,7 @@ serveSSE.HandlerDisconnectNotify(func(cid interface{}) {
 ```
 
 #### ReconnectNotify
-
-    Reconnect notify execute when client made reconnect to server side event.
+Reconnect notify execute when client made reconnect to server side event.
 Server can send events and client do not get them, because connection with server
 was lost. ReconnectNotify will decide this problem. It allows
 detect ID event, and you can send lost events. After sending lost events, must
