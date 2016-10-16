@@ -165,6 +165,8 @@ func (s *SSE) HandlerHTTP(cid interface{}, w http.ResponseWriter, r *http.Reques
 		return
 	}
 	s.waitClose.Unlock()
+	// Locks main map, avoiding situating with connecting simillar id clients.
+	// IT REQUIRES CORRECTION
 	s.consumer.Lock()
 	if _, ok := s.consumer.value[cid]; ok {
 		s.consumer.Unlock()

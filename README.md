@@ -1,5 +1,6 @@
 Simple golang server side events for net/http server, go 1.7
 ==
+## [Example](https://github.com/itcomusic/sse/example)
 ## Start using it
 
 1. Download and install it:

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat Server Side Event Example in Go </title>
+	<script src="./files/scripts.js"></script>
+</head>
+<body>
+	<div style="width: 50%;margin: 0 auto;">
+		<div id="areaChat" style="overflow-y: scroll; height:400px;"></div>
+	    Hello {{.Name}}<br>
+		<form>
+  			Text:<input type="text" style="font-size: 16px; width: 100%" id="text" style="height: 20px"><br>
+		</form>
+		<button type="button" onclick="postMessage()" style="font-size: 16px; width: 100%" >Send</button>
+		<div id="statusMsg"></div>
+	</div>
+</body>
+</html>
