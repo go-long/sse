@@ -36,6 +36,7 @@ type SideEventer interface {
 	CountConsumer() int
 	HandlerHTTP(interface{}, http.ResponseWriter, *http.Request)
 	Close()
+        ConsumerValues() map[interface{}]*consumer
 }
 
 // A SSE represents a information about consumers. SSE has a map of consumers,
@@ -70,6 +71,10 @@ func New(cfg *Config) SideEventer {
 
 	sse.start()
 	return sse
+}
+
+func  (s *SSE) ConsumerValues() map[interface{}]*consumer {
+	return s.consumer.value
 }
 
 // receiveEvent waits new events and dispatches them
