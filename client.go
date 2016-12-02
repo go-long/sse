@@ -6,10 +6,12 @@ package sse
 
 import (
 	"bufio"
-	//"bytes"
-	//"encoding/base64"
-	//"log"
+	"bytes"
+	"encoding/base64"
+	"log"
 	"net/http"
+	"strings"
+
 )
 
 var (
@@ -66,27 +68,38 @@ func (c *Client) Subscribe(stream string, handler func(msg []byte)) error {
 }
 
 // Subscribe to a data stream
-//func (c *Client) Subscribe(stream string, handler func(msg *Event)) error {
-//	resp, err := c.request(stream)
-//	if err != nil {
-//		return err
-//	}
-//	defer resp.Body.Close()
-//
-//	reader := bufio.NewReader(resp.Body)
-//
-//	for {
-//		// Read each new line and process the type of event
-//		line, err := reader.ReadBytes('\n')
-//		if err != nil {
-//			return err
-//		}
-//		msg := c.processEvent(line)
-//		if msg != nil {
-//			handler(msg)
-//		}
-//	}
-//}
+func (c *Client) SubscribeEvent(stream string, handler func(msg *Event)) error {
+	resp, err := c.request(stream)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	reader := bufio.NewReader(resp.Body)
+	msg := &Event{
+
+		Data:&DataEvent{},
+	}
+	for {
+		// Read each new line and process the type of event
+		line, err := reader.ReadBytes('\n')
+		//fmt.Println("line:",string(line),len(line))
+		if err != nil {
+			return err
+		}
+		if len(strings.TrimSpace(string(line)))==0 {
+			//fmt.Println("eeerrr:")
+			handler(msg)
+
+			msg = &Event{
+				Data:&DataEvent{},
+			}
+		}
+
+		c.processEvent(line,msg)
+	}
+
+}
 
 // SubscribeChan sends all events to the provided channel
 func (c *Client) SubscribeChan(stream string, ch chan []byte) error {
@@ -97,6 +110,7 @@ func (c *Client) SubscribeChan(stream string, ch chan []byte) error {
 	defer resp.Body.Close()
 
 	reader := bufio.NewReader(resp.Body)
+
 
 	for {
 		// Read each new line and process the type of event
@@ -136,6 +150,41 @@ func (c *Client) request(stream string) (*http.Response, error) {
 
 	return c.Connection.Do(req)
 }
+
+func (c *Client) processEvent(msg []byte,e *Event)  {
+
+
+	switch h := msg; {
+	case bytes.Contains(h, headerID):
+		e.ID = string(trimHeader(len(headerID), msg))
+	case bytes.Contains(h, headerData):
+		e.Data = &DataEvent{
+			Value:string(trimHeader(len(headerData), msg)),
+			DisabledFormatting:false,
+		}
+	case bytes.Contains(h, headerEvent):
+		e.Event = string(trimHeader(len(headerEvent), msg))
+	case bytes.Contains(h, headerError):
+		e.Error = string(trimHeader(len(headerError), msg))
+	default:
+		return
+	}
+
+
+	if len(e.Data.Value) > 0 && c.EncodingBase64 {
+		buf := make([]byte, base64.StdEncoding.DecodedLen(len(e.Data.Value)))
+
+		_, err := base64.StdEncoding.Decode(buf, []byte(e.Data.Value))
+		if err != nil {
+			log.Println(err)
+		}
+
+		e.Data.Value = string(buf)
+	}
+
+	return
+}
+
 //
 //func (c *Client) processEvent(msg []byte) *Event {
 //	var e Event

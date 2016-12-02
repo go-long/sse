@@ -49,6 +49,7 @@ type Event struct {
 	eventer
 	Event string
 	Data  *DataEvent
+	Error string
 	ID    string
 }
 
@@ -68,6 +69,7 @@ type EventOnly struct {
 	CID   []interface{}
 	Event string
 	Data  *DataEvent
+	Error string
 	ID    string
 }
 

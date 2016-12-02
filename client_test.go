@@ -45,11 +45,11 @@ func TestClient(t *testing.T) {
 				events := make(chan []byte)
 				var cErr error
 				go func(cErr error) {
-					cErr = c.Subscribe("test", func(msg *Event) {
-						if msg.Data != nil {
-							events <- msg.Data
-							return
-						}
+					cErr = c.Subscribe("test", func(msg []byte) {
+						//if msg.Data != nil {
+						//	events <- msg.Data
+						//	return
+						//}
 					})
 				}(cErr)
 
