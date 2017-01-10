@@ -35,7 +35,8 @@ func formattingEvent(event string, data struct {
 	if id != "" {
 		eventMsg.WriteString(fmt.Sprintf("id:%s\n", strings.Replace(id, "\n", "", -1)))
 	}
-	eventMsg.WriteString("\n")
+
+	eventMsg.WriteString("\n\n")
 	return eventMsg.String()
 }
 
@@ -49,8 +50,8 @@ type Event struct {
 	eventer
 	Event string
 	Data  *DataEvent
-	Error string
 	ID    string
+	Error string
 }
 
 // dispatch sends event all consumers
